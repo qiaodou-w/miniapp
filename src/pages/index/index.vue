@@ -1,5 +1,18 @@
 <template>
   <view class="content">
+    <view class="uni-margin-wrap">
+      <swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration">
+        <swiper-item>
+          <view class="swiper-item uni-bg-red">A</view>
+        </swiper-item>
+        <swiper-item>
+          <view class="swiper-item uni-bg-green">B</view>
+        </swiper-item>
+        <swiper-item>
+          <view class="swiper-item uni-bg-blue">C</view>
+        </swiper-item>
+      </swiper>
+    </view>
     <view>
       <navigator url="Trip/Trip" hover-class="navigator-hover">
         <button type="default">出入校管理</button>
@@ -21,6 +34,11 @@
 export default {
   data() {
     return {
+      background: ['color1', 'color2', 'color3'],
+      indicatorDots: true,
+      autoplay: true,
+      interval: 5000,
+      duration: 500,
       title: 'Hello'
     }
   },
@@ -45,6 +63,21 @@ export default {
     margin: 200rpx auto 50rpx auto;
   }
 
+  .uni-margin-wrap {
+  	width:690rpx;
+  	width: 100%;;
+  }
+
+  .swiper {
+  	height: 300rpx;
+  }
+
+  .swiper-item {
+  	display: block;
+  	line-height: 300rpx;
+  	text-align: center;
+  }
+
   .text-area {
     display: flex;
     justify-content: center;
@@ -54,4 +87,5 @@ export default {
     font-size: 36rpx;
     color: #8f8f94;
   }
+
 </style>

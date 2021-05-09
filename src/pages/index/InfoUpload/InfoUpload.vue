@@ -49,6 +49,7 @@
 
 <script>
 const graceChecker = require('@/common/graceChecker.js')
+import { uploadInfo } from '@/network/api'
 export default {
   data() {
     return {}
@@ -79,6 +80,7 @@ export default {
       const formData = e.detail.value
       const checkRes = graceChecker.check(formData, rule)
       if (checkRes) {
+        uploadInfo()
         uni.showToast({
           title: '验证通过!',
           icon: 'none'
