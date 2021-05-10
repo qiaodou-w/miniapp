@@ -1,46 +1,60 @@
 <template>
   <view>
     <view class="uni-padding-wrap uni-common-mt">
-      <form @submit="formSubmit" @reset="formReset">
+      <form @submit="formSubmit">
+
         <view class="uni-form-item uni-column">
-          <view class="title">姓名</view>
-          <input class="uni-input" name="nickname" placeholder="请输入姓名">
+          <view class="title">认证码</view>
+          <input class="uni-input" name="uuid" placeholder="请输入认证码">
         </view>
         <view class="uni-form-item uni-column">
-          <view class="title">性别</view>
-          <radio-group name="gender">
+          <view class="title">体温</view>
+          <view class="uni-list-cell-db">
+            <picker :value="tempIndex" :range="array" @change="bindPickerChange">
+              <view class="uni-input">{{ array[tempIndex] }}</view>
+            </picker>
+          </view>
+        </view>
+        <view class="uni-form-item uni-column">
+          <view class="title">14天内是否有中高风险地区旅居史</view>
+          <radio-group name="hasTravel">
             <label>
-              <radio value="男" /><text>男</text>
+              <radio value="true" /><text>是</text>
             </label>
             <label>
-              <radio value="女" /><text>女</text>
+              <radio value="false" /><text>否</text>
             </label>
           </radio-group>
         </view>
         <view class="uni-form-item uni-column">
-          <view class="title">爱好</view>
-          <checkbox-group name="loves">
+          <view class="title">14天内是否接触中高风险地区旅居史人员</view>
+          <radio-group name="hasTouch">
             <label>
-              <checkbox value="读书" /><text>读书</text>
+              <radio value="true" /><text>是</text>
             </label>
             <label>
-              <checkbox value="写字" /><text>写字</text>
+              <radio value="false" /><text>否</text>
             </label>
-          </checkbox-group>
+          </radio-group>
         </view>
         <view class="uni-form-item uni-column">
-          <view class="title">年龄</view>
-          <slider value="20" name="age" show-value />
+          <view class="title">今日是否有新冠病毒感染相关症状</view>
+          <radio-group name="hasWrong">
+            <label>
+              <radio value="true" /><text>是</text>
+            </label>
+            <label>
+              <radio value="false" /><text>否</text>
+            </label>
+          </radio-group>
         </view>
         <view class="uni-form-item uni-column">
-          <view class="title">保留选1项</view>
-          <view>
-            <switch name="switch" />
-          </view>
+          <view class="title">备注</view>
+          <input class="uni-input" name="other" placeholder="备注">
         </view>
         <view class="uni-btn-v">
-          <button form-type="submit">Submit</button>
-          <button type="default" form-type="reset">Reset</button>
+          <button type="primary" form-type="submit">提交</button>
+          <button type="default" form-type="reset">重置</button>
         </view>
       </form>
     </view>
@@ -49,51 +63,100 @@
 
 <script>
 const graceChecker = require('@/common/graceChecker.js')
+import amap from '@/common/amap-wx.js'
 import { uploadInfo } from '@/network/api'
 export default {
   data() {
-    return {}
+    return {
+      tempIndex: 6,
+      formDate: {
+        uuid: '',
+        hasTravel: '',
+        hasWrong: '',
+        hasTouch: ''
+      },
+      location: '',
+      array: [],
+      temp: '36.6',
+      amapPlugin: null,
+      key: '2fd17849673278b98d00168584dcde70'
+    }
+  },
+  onLoad() {
+    this.amapPlugin = new amap.AMapWX({
+      key: this.key
+    })
+    this.initTempList()
+    this.getLocation()
   },
   methods: {
-    formSubmit: function(e) {
+    async getLocation() {
+      uni.showLoading({
+        title: '获取位置中...'
+      })
+      await this.amapPlugin.getRegeo({
+        success: (data) => {
+          this.location = data[0].regeocodeData.formatted_address
+          uni.hideLoading()
+        }
+      })
+    },
+
+    bindPickerChange: function(e) {
+      this.tempIndex = e.target.value
+      this.temp = this.array[this.tempIndex]
+    },
+
+    initTempList: function() {
+      for (let i = 36; i <= 42; i += 0.1) {
+        this.array.push(i.toFixed(1))
+      }
+    },
+    formSubmit: async function(e) {
       // 定义表单规则
       const rule = [{
-        name: 'nickname',
-        checkType: 'string',
-        checkRule: '1,3',
-        errorMsg: '姓名应为1-3个字符'
+        name: 'uuid',
+        checkType: 'int',
+        checkRule: '6',
+        errorMsg: '认证码为7位'
       },
       {
-        name: 'gender',
+        name: 'hasTravel',
         checkType: 'in',
-        checkRule: '男,女',
-        errorMsg: '请选择性别'
+        checkRule: 'true,false',
+        errorMsg: '请填写完整'
       },
       {
-        name: 'loves',
-        checkType: 'notnull',
-        checkRule: '',
-        errorMsg: '请选择爱好'
+        name: 'hasWrong',
+        checkType: 'in',
+        checkRule: 'true,false',
+        errorMsg: '请填写完整'
+      },
+      {
+        name: 'hasTouch',
+        checkType: 'in',
+        checkRule: 'true,false',
+        errorMsg: '请填写完整'
       }
+
       ]
       // 进行表单检查
       const formData = e.detail.value
+      formData.temp = this.temp
+      formData.location = this.location
       const checkRes = graceChecker.check(formData, rule)
       if (checkRes) {
-        uploadInfo()
+        const res = await uploadInfo(formData)
         uni.showToast({
-          title: '验证通过!',
-          icon: 'none'
+          title: res.data.msg,
+          icon: { type: 'success' }
         })
       } else {
         uni.showToast({
           title: graceChecker.error,
-          icon: 'none'
+          icon: 'warn'
         })
       }
-    },
-    formReset: function(e) {
-      console.log('清空数据')
     }
   }
 }
