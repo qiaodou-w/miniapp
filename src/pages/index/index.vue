@@ -13,20 +13,27 @@
         </swiper-item>
       </swiper>
     </view>
-    <view>
-      <navigator url="Trip/Trip" hover-class="navigator-hover">
-        <button type="default">出入校管理</button>
+    <view class="uni-margin-wrap uni-flex uni-column">
+      <navigator class="uni-flex-item" url="Trip/Trip" hover-class="navigator-hover">
+        <button class="uni-btn-v uni-flex item" type="default">
+          <image class="img" src="@/static/047-calendar.png" mode="scaleToFill" />
+          <text class="text">出入校管理</text>
+        </button>
       </navigator>
-      <navigator url="InfoUpload/InfoUpload" hover-class="navigator-hover">
-        <button type="default">健康信息上报</button>
+      <navigator class="uni-flex-item" url="InfoUpload/InfoUpload" hover-class="navigator-hover">
+        <button class="uni-btn-v uni-flex item" type="default">
+          <image class="img" src="@/static/003-clipboard.png" mode="scaleToFill" />
+          <text class="text">信息上报</text>
+        </button>
       </navigator>
-      <navigator url="AskForLeave/AskForLeave" hover-class="navigator-hover">
-        <button type="default">请假申请</button>
+      <navigator class="uni-flex-item" url="AskForLeave/AskForLeave" hover-class="navigator-hover">
+        <button class="uni-btn-v uni-flex item" type="default">
+          <image class="img" src="@/static/048-file.png" mode="scaleToFill" />
+          <div class="text">请假申请</div>
+        </button>
       </navigator>
-
-      <view class="">打卡信息</view>
-
     </view>
+    <view class="">打卡信息</view>
   </view>
 </template>
 
@@ -57,6 +64,11 @@ export default {
     justify-content: center;
   }
 
+  .img {
+    transform: translateY(21%);
+    height: 128rpx;
+    width: 128rpx;
+  }
   .logo {
     height: 200rpx;
     width: 200rpx;
@@ -64,28 +76,41 @@ export default {
   }
 
   .uni-margin-wrap {
-  	width:690rpx;
-  	width: 100%;;
+    width:690rpx;
+    /*width: 100%;*/
+    margin-bottom: 20rpx;
+  }
+
+  .uni-btn-v {
+    padding:10rpx 100rpx;
+    border-radius: 10rpx;
+    height: 200rpx;
+  }
+
+  .uni-flex-item {
+    margin-bottom: 15rpx;
+  }
+
+  .uni-flex-item {
+    justify-content: space-between;
+  }
+
+  .item {
+    justify-content: space-between;
+  }
+
+  .text {
+    margin-top: 45rpx;
   }
 
   .swiper {
-  	height: 300rpx;
+    height: 300rpx;
   }
 
   .swiper-item {
-  	display: block;
-  	line-height: 300rpx;
-  	text-align: center;
-  }
-
-  .text-area {
-    display: flex;
-    justify-content: center;
-  }
-
-  .title {
-    font-size: 36rpx;
-    color: #8f8f94;
+    display: block;
+    line-height: 300rpx;
+    text-align: center;
   }
 
 </style>

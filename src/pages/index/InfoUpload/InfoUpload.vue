@@ -1,11 +1,14 @@
 <template>
   <view>
+    <view class="uni-padding-wrap">
+      <image class="header" src="@/static/upload.png" mode="scaleToFill" />
+    </view>
     <view class="uni-padding-wrap uni-common-mt">
       <form @submit="formSubmit">
 
         <view class="uni-form-item uni-column">
           <view class="title">认证码</view>
-          <input class="uni-input" name="uuid" placeholder="请输入认证码">
+          <input class="uni-input uni-input-border" name="uuid" placeholder="请输入认证码">
         </view>
         <view class="uni-form-item uni-column">
           <view class="title">体温</view>
@@ -184,7 +187,29 @@ export default {
 </script>
 
 <style>
+  .header {
+    height: 400rpx;
+    width: 690rpx;
+  }
   .uni-form-item .title {
     padding: 20rpx 0;
+  }
+  .uni-input-border {
+    padding: 0 10px;
+    height: 35px;
+  }
+  .uni-input-border,
+  .uni-textarea-border {
+    width: 100%;
+    font-size: 14px;
+    color: #666;
+    height: 80rpx;
+    border: 1px #e5e5e5 solid;
+    border-radius: 5px;
+    box-sizing: border-box;
+  }
+  .uni-textarea-border {
+    padding: 10px;
+    height: 80px;
   }
 </style>
