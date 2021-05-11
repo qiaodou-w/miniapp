@@ -18,25 +18,31 @@
         "enablePullDownRefresh": false
       }
 
-    }
-      ,{
+    },{
             "path" : "pages/index/InfoUpload/InfoUpload",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
-        }
-        ,{
+
+    },{
             "path" : "pages/index/AskForLeave/AskForLeave",
-            "style" :                                                                                    
+            "style" :
             {
                 "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
-            
-        }
+
+    },{
+            "path" : "pages/Profile/bindUser/bindUser",
+            "style" :
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+
+    }
     ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

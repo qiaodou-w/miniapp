@@ -73,20 +73,5 @@ export default {
   padding: 0 10px;
   height: 35px;
 }
-.uni-input-border,
-.uni-textarea-border {
-  width: 100%;
-  font-size: 14px;
-  color: #666;
-  height: 80rpx;
-
-  border: 1px #e5e5e5 solid;
-  border-radius: 5px;
-  box-sizing: border-box;
-}
-.uni-textarea-border {
-  padding: 10px;
-  height: 80px;
-}
 
 </style>

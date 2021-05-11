@@ -2,15 +2,15 @@
 var pattern = {
   email: /^\S+?@\S+?\.\S+?$/,
   idcard: /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/,
-  url: new RegExp('^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$', 'i')
-}
+  url: new RegExp("^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$", 'i')
+};
 
 const FORMAT_MAPPING = {
-  'int': 'integer',
-  'bool': 'boolean',
-  'double': 'number',
-  'long': 'number',
-  'password': 'string'
+  "int": 'integer',
+  "bool": 'boolean',
+  "double": 'number',
+  "long": 'number',
+  "password": 'string'
   // "fileurls": 'array'
 }
 
@@ -23,8 +23,8 @@ function formatMessage(args, resources = '') {
   })
 
   let str = resources
-  for (const key in args) {
-    const reg = new RegExp('{' + key + '}')
+  for (let key in args) {
+    let reg = new RegExp('{' + key + '}')
     str = str.replace(reg, args[key])
   }
   return str
@@ -32,92 +32,93 @@ function formatMessage(args, resources = '') {
 
 function isEmptyValue(value, type) {
   if (value === undefined || value === null) {
-    return true
+    return true;
   }
 
   if (typeof value === 'string' && !value) {
-    return true
+    return true;
   }
 
   if (Array.isArray(value) && !value.length) {
-    return true
+    return true;
   }
 
   if (type === 'object' && !Object.keys(value).length) {
-    return true
+    return true;
   }
 
-  return false
+  return false;
 }
 
 const types = {
   integer(value) {
-    return types.number(value) && parseInt(value, 10) === value
+    return types.number(value) && parseInt(value, 10) === value;
   },
   string(value) {
-    return typeof value === 'string'
+    return typeof value === 'string';
   },
   number(value) {
     if (isNaN(value)) {
-      return false
+      return false;
     }
-    return typeof value === 'number'
+    return typeof value === 'number';
   },
-  'boolean': function(value) {
-    return typeof value === 'boolean'
+  "boolean": function (value) {
+    return typeof value === 'boolean';
   },
-  'float': function(value) {
-    return types.number(value) && !types.integer(value)
+  "float": function (value) {
+    return types.number(value) && !types.integer(value);
   },
   array(value) {
-    return Array.isArray(value)
+    return Array.isArray(value);
   },
   object(value) {
-    return typeof value === 'object' && !types.array(value)
+    return typeof value === 'object' && !types.array(value);
   },
   date(value) {
-    return value instanceof Date
+    return value instanceof Date;
   },
   timestamp(value) {
     if (!this.integer(value) || Math.abs(value).toString().length > 16) {
       return false
     }
-    return true
+    return true;
   },
   file(value) {
-    return typeof value.url === 'string'
+    return typeof value.url === 'string';
   },
   email(value) {
-    return typeof value === 'string' && !!value.match(pattern.email) && value.length < 255
+    return typeof value === 'string' && !!value.match(pattern.email) && value.length < 255;
   },
   url(value) {
-    return typeof value === 'string' && !!value.match(pattern.url)
+    return typeof value === 'string' && !!value.match(pattern.url);
   },
   pattern(reg, value) {
     try {
-      return new RegExp(reg).test(value)
+      return new RegExp(reg).test(value);
     } catch (e) {
-      return false
+      return false;
     }
   },
   method(value) {
-    return typeof value === 'function'
+    return typeof value === 'function';
   },
   idcard(value) {
-    return typeof value === 'string' && !!value.match(pattern.idcard)
+    return typeof value === 'string' && !!value.match(pattern.idcard);
   },
   'url-https'(value) {
-    return this.url(value) && value.startsWith('https://')
+    return this.url(value) && value.startsWith('https://');
   },
   'url-scheme'(value) {
-    return value.startsWith('://')
+    return value.startsWith('://');
   },
   'url-web'(value) {
-    return false
+    return false;
   }
 }
 
 class RuleValidator {
+
   constructor(message) {
     this._message = message
   }
@@ -125,9 +126,9 @@ class RuleValidator {
   async validateRule(fieldKey, fieldValue, value, data, allData) {
     var result = null
 
-    const rules = fieldValue.rules
+    let rules = fieldValue.rules
 
-    const hasRequired = rules.findIndex((item) => {
+    let hasRequired = rules.findIndex((item) => {
       return item.required
     })
     if (hasRequired < 0) {
@@ -146,8 +147,8 @@ class RuleValidator {
     }
 
     for (var i = 0; i < rules.length; i++) {
-      const rule = rules[i]
-      const vt = this._getValidateType(rule)
+      let rule = rules[i]
+      let vt = this._getValidateType(rule)
 
       Object.assign(rule, {
         label: fieldValue.label || `["${fieldKey}"]`
@@ -161,8 +162,8 @@ class RuleValidator {
       }
 
       if (rule.validateExpr) {
-        const now = Date.now()
-        const resultExpr = rule.validateExpr(value, allData, now)
+        let now = Date.now()
+        let resultExpr = rule.validateExpr(value, allData, now)
         if (resultExpr === false) {
           result = this._getMessage(rule, rule.errorMessage || this._message['default'])
           break
@@ -231,36 +232,36 @@ class RuleValidator {
 const RuleValidatorHelper = {
   required(rule, value, message) {
     if (rule.required && isEmptyValue(value, rule.format || typeof value)) {
-      return formatMessage(rule, rule.errorMessage || message.required)
+      return formatMessage(rule, rule.errorMessage || message.required);
     }
 
     return null
   },
 
   range(rule, value, message) {
-    const { range, errorMessage } = rule
+    const { range, errorMessage } = rule;
 
-    const list = new Array(range.length)
+    let list = new Array(range.length);
     for (let i = 0; i < range.length; i++) {
-      const item = range[i]
+      const item = range[i];
       if (types.object(item) && item.value !== undefined) {
-        list[i] = item.value
+        list[i] = item.value;
       } else {
-        list[i] = item
+        list[i] = item;
       }
     }
 
     let result = false
     if (Array.isArray(value)) {
-      result = (new Set(value.concat(list)).size === list.length)
+      result = (new Set(value.concat(list)).size === list.length);
     } else {
       if (list.indexOf(value) > -1) {
-        result = true
+        result = true;
       }
     }
 
     if (!result) {
-      return formatMessage(rule, errorMessage || message['enum'])
+      return formatMessage(rule, errorMessage || message['enum']);
     }
 
     return null
@@ -268,12 +269,12 @@ const RuleValidatorHelper = {
 
   rangeNumber(rule, value, message) {
     if (!types.number(value)) {
-      return formatMessage(rule, rule.errorMessage || message.pattern.mismatch)
+      return formatMessage(rule, rule.errorMessage || message.pattern.mismatch);
     }
 
-    const { minimum, maximum, exclusiveMinimum, exclusiveMaximum } = rule
-    const min = exclusiveMinimum ? value <= minimum : value < minimum
-    const max = exclusiveMaximum ? value >= maximum : value > maximum
+    let { minimum, maximum, exclusiveMinimum, exclusiveMaximum } = rule;
+    let min = exclusiveMinimum ? value <= minimum : value < minimum;
+    let max = exclusiveMaximum ? value >= maximum : value > maximum;
 
     if (minimum !== undefined && min) {
       return formatMessage(rule, rule.errorMessage || message['number'][exclusiveMinimum ? 'exclusiveMinimum' : 'minimum'])
@@ -288,12 +289,12 @@ const RuleValidatorHelper = {
 
   rangeLength(rule, value, message) {
     if (!types.string(value) && !types.array(value)) {
-      return formatMessage(rule, rule.errorMessage || message.pattern.mismatch)
+      return formatMessage(rule, rule.errorMessage || message.pattern.mismatch);
     }
 
-    const min = rule.minLength
-    const max = rule.maxLength
-    const val = value.length
+    let min = rule.minLength;
+    let max = rule.maxLength;
+    let val = value.length;
 
     if (min !== undefined && val < min) {
       return formatMessage(rule, rule.errorMessage || message['length'].minLength)
@@ -308,19 +309,19 @@ const RuleValidatorHelper = {
 
   pattern(rule, value, message) {
     if (!types['pattern'](rule.pattern, value)) {
-      return formatMessage(rule, rule.errorMessage || message.pattern.mismatch)
+      return formatMessage(rule, rule.errorMessage || message.pattern.mismatch);
     }
 
     return null
   },
 
   format(rule, value, message) {
-    var customTypes = Object.keys(types)
-    var format = FORMAT_MAPPING[rule.format] ? FORMAT_MAPPING[rule.format] : (rule.format || rule.arrayType)
+    var customTypes = Object.keys(types);
+    var format = FORMAT_MAPPING[rule.format] ? FORMAT_MAPPING[rule.format] : (rule.format || rule.arrayType);
 
     if (customTypes.indexOf(format) > -1) {
       if (!types[format](value)) {
-        return formatMessage(rule, rule.errorMessage || message.typeError)
+        return formatMessage(rule, rule.errorMessage || message.typeError);
       }
     }
 
@@ -329,12 +330,12 @@ const RuleValidatorHelper = {
 
   arrayTypeFormat(rule, value, message) {
     if (!Array.isArray(value)) {
-      return formatMessage(rule, rule.errorMessage || message.typeError)
+      return formatMessage(rule, rule.errorMessage || message.typeError);
     }
 
     for (let i = 0; i < value.length; i++) {
-      const element = value[i]
-      const formatResult = this.format(rule, element, message)
+      const element = value[i];
+      let formatResult = this.format(rule, element, message)
       if (formatResult !== null) {
         return formatResult
       }
@@ -345,8 +346,9 @@ const RuleValidatorHelper = {
 }
 
 class SchemaValidator extends RuleValidator {
+
   constructor(schema, options) {
-    super(SchemaValidator.message)
+    super(SchemaValidator.message);
 
     this._schema = schema
     this._options = options || null
@@ -381,11 +383,11 @@ class SchemaValidator extends RuleValidator {
   }
 
   async invokeValidate(data, all, allData) {
-    const result = []
-    const schema = this._schema
-    for (const key in schema) {
-      const value = schema[key]
-      const errorMessage = await this.validateRule(key, value, data[key], data, allData)
+    let result = []
+    let schema = this._schema
+    for (let key in schema) {
+      let value = schema[key]
+      let errorMessage = await this.validateRule(key, value, data[key], data, allData)
       if (errorMessage != null) {
         result.push({
           key,
@@ -398,9 +400,9 @@ class SchemaValidator extends RuleValidator {
   }
 
   async invokeValidateUpdate(data, all, allData) {
-    const result = []
-    for (const key in data) {
-      const errorMessage = await this.validateRule(key, this._schema[key], data[key], data, allData)
+    let result = []
+    for (let key in data) {
+      let errorMessage = await this.validateRule(key, this._schema[key], data[key], data, allData)
       if (errorMessage != null) {
         result.push({
           key,
@@ -419,7 +421,7 @@ class SchemaValidator extends RuleValidator {
       return ''
     }
 
-    var noExistFields = keys.filter((key) => { return keys2.indexOf(key) < 0 })
+    var noExistFields = keys.filter((key) => { return keys2.indexOf(key) < 0; })
     var errorMessage = formatMessage({
       field: JSON.stringify(noExistFields)
     }, SchemaValidator.message.TAG + SchemaValidator.message['defaultInvalid'])
@@ -432,7 +434,7 @@ class SchemaValidator extends RuleValidator {
 
 function Message() {
   return {
-    TAG: '',
+    TAG: "",
     default: '验证错误',
     defaultInvalid: '提交的字段{field}在数据库中并不存在',
     validateFunction: '验证无效',
@@ -461,9 +463,10 @@ function Message() {
     pattern: {
       mismatch: '{label}格式不匹配'
     }
-  }
+  };
 }
 
-SchemaValidator.message = new Message()
+
+SchemaValidator.message = new Message();
 
 export default SchemaValidator
