@@ -53,7 +53,7 @@
           <input class="uni-input" name="other" placeholder="备注">
         </view>
         <view class="uni-btn-v">
-          <button type="primary" form-type="submit">提交</button>
+          <button :disabled="hasUpload" type="primary" form-type="submit">提交</button>
           <button type="default" form-type="reset">重置</button>
         </view>
       </form>
@@ -65,6 +65,7 @@
 const graceChecker = require('@/common/graceChecker.js')
 import amap from '@/common/amap-wx.js'
 import { uploadInfo } from '@/network/api'
+import { dateFormat } from '@/common/util'
 export default {
   data() {
     return {
@@ -79,7 +80,9 @@ export default {
       array: [],
       temp: '36.6',
       amapPlugin: null,
-      key: '2fd17849673278b98d00168584dcde70'
+      key: '2fd17849673278b98d00168584dcde70',
+      uploadTime: '',
+      hasUpload: false
     }
   },
   onLoad() {
@@ -88,6 +91,7 @@ export default {
     })
     this.initTempList()
     this.getLocation()
+    this.fetchStatus()
   },
   methods: {
     async getLocation() {
@@ -147,17 +151,34 @@ export default {
       const checkRes = graceChecker.check(formData, rule)
       if (checkRes) {
         const res = await uploadInfo(formData)
-        uni.showToast({
-          title: res.data.msg,
-          icon: { type: 'success' }
+        uni.setStorage({
+          key: 'uploadTime',
+          data: dateFormat('YYYY-mm-dd', new Date()),
+          success: function() {
+            this.uploadTime = dateFormat('YYYY-mm-dd', new Date())
+          }
         })
+        uni.showToast({
+          title: res.data.msg
+        })
+        this.hasUpload = true
       } else {
         uni.showToast({
           title: graceChecker.error,
-          icon: 'warn'
+          icon: 'none'
         })
       }
+    },
+    fetchStatus() {
+      uni.getStorage({
+        key: 'uploadTime',
+        success: (res) => {
+          this.uploadTime = res.data
+          this.hasUpload = (this.uploadTime === dateFormat('YYYY-mm-dd', new Date()))
+        }
+      })
     }
+
   }
 }
 </script>
