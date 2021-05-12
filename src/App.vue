@@ -68,7 +68,7 @@ export default {
   /* 以下样式用于 hello uni-app 演示所需 */
   page {
     background-color: #efeff4;
-    height: 100%;
+    height: 95%;
     font-size: 28rpx;
     line-height: 1.8;
   }

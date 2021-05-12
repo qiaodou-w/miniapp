@@ -29,8 +29,10 @@
         <view class="title">备注</view>
         <input v-model="formData.other" type="text" class="uni-input uni-input-border" placeholder="备注" @blur="binddata('other', $event.detail.value)">
       </uni-forms-item>
+      <view class="uni-btn-v">
+        <button @click="submitForm">提交</button>
+      </view>
 
-      <button @click="submitForm">Submit</button>
     </uni-forms>
   </view>
 </template>

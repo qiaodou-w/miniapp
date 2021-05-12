@@ -97,11 +97,11 @@ export default {
     this.fetchStatus()
   },
   methods: {
-    async getLocation() {
+    getLocation() {
       uni.showLoading({
         title: '获取位置中...'
       })
-      await this.amapPlugin.getRegeo({
+      this.amapPlugin.getRegeo({
         success: (data) => {
           this.location = data[0].regeocodeData.formatted_address
           uni.hideLoading()

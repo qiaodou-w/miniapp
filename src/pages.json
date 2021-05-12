@@ -60,7 +60,7 @@
     }, {
       "pagePath": "pages/Profile/Profile",
       "iconPath": "static/tabbar_profile.png",
-      "selectedIconPath": "static/tabbar_home_select.png",
+      "selectedIconPath": "static/tabbar_profile_select.png",
       "text": "个人"
     }]
   },

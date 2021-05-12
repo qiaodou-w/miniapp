@@ -1,5 +1,5 @@
 <template>
-  <view>
+  <view class="uni-padding-wrap uni-common-mt">
     <uni-forms ref="form" :value="formData">
       <uni-forms-item label="认证码" name="uuid">
         <input v-model="formData.uuid" type="text" class="uni-input uni-input-border" placeholder="输入认证码" @blur="binddata('uuid', $event.detail.value)">
@@ -21,6 +21,14 @@ export default {
         password: ''
       }
     }
+  },
+  onLoad() {
+    uni.getStorage({
+      key: 'uuid',
+      success: (res) => {
+        this.formData.uuid = res.data
+      }
+    })
   },
   methods: {
     submitForm(form) {
